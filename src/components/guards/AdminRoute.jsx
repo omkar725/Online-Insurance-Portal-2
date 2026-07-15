@@ -1,0 +1,27 @@
+import { Navigate } from 'react-router-dom'
+import { useAuth } from '../../lib/auth'
+
+export default function AdminRoute({ children }) {
+  const { user, profile, loading } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-surface-50">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+          <p className="text-surface-500 font-medium">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />
+  }
+
+  if (profile?.role !== 'admin') {
+    return <Navigate to="/unauthorized" replace />
+  }
+
+  return children
+}
